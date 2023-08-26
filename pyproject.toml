@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "api-security-engine"
+version = "0.1.0"
+description = "Inline API security engine in Python"
+authors = ["Dima Kovalchuk <dima@orca.security>"]
+#readme = "README.md"
+packages = [{include = "api_security_engine"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.3.0"
+fastapi = "^0.101.1"
+uvicorn = "^0.23.2"
+pytest-asyncio = "^0.21.1"
+pytest-freezegun = "^0.4.2"
+kafka-python = "^2.0.2"
+requests = "^2.31.0"
+mypy = "^1.5.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
