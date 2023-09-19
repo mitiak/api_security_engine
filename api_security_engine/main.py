@@ -4,19 +4,16 @@ from typing import Callable, Awaitable, Any, Dict
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from api_security_engine.alert_handlers.kafka_alert_handler import KafkaAlertHandler
 from api_security_engine.alert_handlers.log_alert_handler import LogAlertHandler
+from api_security_engine.alert_handlers.slack_alert_handler import SlackAlertHandler
 from api_security_engine.lib.engine import APISecurityEngine
 from api_security_engine.lib.models import SecurityEngineRequest, ThreatSeverity
-from api_security_engine.alert_handlers.slack_alert_handler import SlackAlertHandler
 from api_security_engine.security_modules.ddos_module import DDOSModule
 from api_security_engine.security_modules.enum_module import EnumerationModule
 from api_security_engine.security_modules.payload_module import MaliciousPayloadModule
 
-
 # FastAPI application
 app = FastAPI()
-
 
 # A configured instance of APISecurityEngine
 security_engine = APISecurityEngine(
@@ -33,11 +30,6 @@ security_engine = APISecurityEngine(
             alert_severity=ThreatSeverity.medium,
             webhook_url="https://hooks.slack.com/services/TEAM_ID/CHANNEL_ID/TOKEN",
         ),
-        KafkaAlertHandler(
-            alert_severity=ThreatSeverity.high,
-            bootstrap_servers="kafka:9091",
-            topics=["local.fastapi.api-security-engine-alerts.v1"]
-        )
     ]
 )
 
@@ -100,7 +92,6 @@ async def security_engine_middleware(
     :type call_next: Callable[[Request], Awaitable[HTTPResponse]]
     :return: The middleware is returning either an HTTPResponse or a JSONResponse.
     """
-
     # Using the workaround to get tge request body
     request_body = await get_request_body(request)
 
@@ -121,14 +112,11 @@ async def security_engine_middleware(
     response = await call_next(request)
     return response
 
+
 # Some example FastAPI endpoints
 
-@app.get("/api/sensitive-data")
-async def sensitive_data() -> Any:
-    return {"data": "This is sensitive data"}
 
-
-@app.post("/api/log_request/")
+@app.post("/api/example-endpoint/")
 async def log_request(request: Request) -> Any:
     return {"request_body": await request.body()}
 

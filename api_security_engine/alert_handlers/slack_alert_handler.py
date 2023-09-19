@@ -1,6 +1,4 @@
-import json
-
-import requests # type: ignore
+import requests  # type: ignore
 
 from api_security_engine.lib.alert_handler import AlertHandler
 from api_security_engine.lib.models import ThreatSeverity, SecurityEngineAlert
@@ -27,11 +25,10 @@ class SlackAlertHandler(AlertHandler):
         by sending an HTTP POST request to a specified URL. In this case, the webhook URL is
         :type webhook_url: str
         """
-
         super().__init__(alert_severity)
         self.webhook_url = webhook_url
 
-    def handle_alert(self, alert: SecurityEngineAlert) -> None:
+    async def handle_alert(self, alert: SecurityEngineAlert) -> None:
         """
         The function `handle_alert` sends a POST request to a Slack webhook URL with a JSON payload containing a
         security alert.

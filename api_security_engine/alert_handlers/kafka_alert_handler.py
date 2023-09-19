@@ -1,7 +1,7 @@
 import json
-from typing import List, Dict, Any
+from typing import List
 
-from kafka import KafkaProducer # type: ignore
+from kafka import KafkaProducer  # type: ignore
 
 from api_security_engine.lib.alert_handler import AlertHandler
 from api_security_engine.lib.models import ThreatSeverity, SecurityEngineAlert
@@ -28,20 +28,16 @@ class KafkaAlertHandler(AlertHandler):
         will send messages. Each string in the list represents a topic name
         :type topics: List[str]
         """
-
         super().__init__(alert_severity)
 
-        try:
-            self.producer = KafkaProducer(
-                bootstrap_servers=bootstrap_servers,
-                value_serializer=lambda x: json.dumps(x).encode("utf-8")
-            )
-        except Exception:
-            self.producer = None
+        self.producer = KafkaProducer(
+            bootstrap_servers=bootstrap_servers,
+            value_serializer=lambda x: json.dumps(x).encode("utf-8")
+        )
 
         self.topics = topics
 
-    def handle_alert(self, alert: SecurityEngineAlert) -> None:
+    async def handle_alert(self, alert: SecurityEngineAlert) -> None:
         """
         The function handles a security engine alert by sending it to multiple topics using a producer and then flushing the
         producer to ensure all messages are sent.
@@ -50,9 +46,6 @@ class KafkaAlertHandler(AlertHandler):
         engine
         :type alert: SecurityEngineAlert
         """
-        if not self.producer:
-            return
-
         for topic in self.topics:
             self.producer.send(topic, value=alert)
 

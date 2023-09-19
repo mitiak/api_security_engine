@@ -19,7 +19,7 @@ class AlertHandler:
         :type alert: SecurityEngineAlert
         """
         if alert.threat_details.severity >= self.alert_severity:
-            self.handle_alert(alert)
+            await self.handle_alert(alert)
 
     async def handle_alert(self, alert: SecurityEngineAlert) -> None:
         """
